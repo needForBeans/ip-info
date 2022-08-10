@@ -1,4 +1,4 @@
-# geoip-local
+# ip-geolocation-api
 Local hosted "database" & api for resolving ipV4 adress to country code & country with sub 10ms response times.
 <br />
 To keep it simple the downloaded geoip data is store in './data/geoip.json' with a timestamp.
