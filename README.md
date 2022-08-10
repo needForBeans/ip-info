@@ -9,7 +9,7 @@
   <br /><br />
 
 # requirements
-  * A provider like 'https://mailfud.org/geoip-legacy/' (in testing 95% accuracy) for csv geoip data
+  * A provider like 'https://mailfud.org/geoip-legacy/' (in testing ~95% accuracy) for csv geoip data
   * npm
   * nodejs
 
