@@ -15,6 +15,7 @@ At startup and every 2 hours it checks if the data is older than your wanted con
 
 # install
 ```
+git clone https://github.com/needForBeans/ip-geolocation-api
 npm i
 ```
 # .env config
