@@ -20,7 +20,7 @@ npm i
 ```
 # .env config
 ```
-# requierd
+# required
 
 # port on which the api will be reachable
 GEOIP_API_PORT=Number
