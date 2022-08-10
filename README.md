@@ -16,6 +16,7 @@
 # install
 ```
   git clone https://github.com/needForBeans/ip-geolocation-api
+  cd ip-geolocation-api/
   npm i
 ```
 # .env config
