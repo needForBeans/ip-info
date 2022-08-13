@@ -37,7 +37,7 @@
   # optional
 
   # if you want to use a different provider and dont need to unzip the downloaded file
-  GEOIP_SKIP_UNZIP='anything'
+  #GEOIP_SKIP_UNZIP='anything'
 ```
 
 # start
