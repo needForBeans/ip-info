@@ -20,23 +20,23 @@
   npm i
 ```
 # .env config
+create a file named ".env" in the ip-geolocation-api/ directory and paste the text below in it.
 ```
-  # required
+  # REQUIRED
   # port on which the api will be reachable
   #GEOIP_API_PORT=Number
 
   # url of file to be downloaded
-  # guaranteed working: 'https://mailfud.org/geoip-legacy/GeoIP-legacy.csv.gz'
   #GEOIP_CSV_SRC=String
 
   # refresh data after set days
   #GEOIP_SRC_VALID_FOR_DAYS=Number
 
-  # optional
+  # OPTIONAL
   # if you want to use a different provider and dont need to unzip the downloaded file
   #GEOIP_SKIP_UNZIP=true
   
-  # example
+  # EXAMPLE
   GEOIP_API_PORT=8080
   GEOIP_CSV_SRC='https://mailfud.org/geoip-legacy/GeoIP-legacy.csv.gz'
   GEOIP_SRC_VALID_FOR_DAYS=3
