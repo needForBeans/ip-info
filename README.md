@@ -51,5 +51,14 @@
   * url query: http://127.0.0.1:8080/?ip=
   * if nothing is set it will use the ip from the request
 
+# api reponse
+```
+  {
+    ip: String,
+    countryCode: String,
+    country: String
+  }
+```
+
 # Todo
   * Add ipV6 support
