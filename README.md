@@ -53,11 +53,17 @@
 
 # api reponse
 ```
-  {
-    ip: String,
-    countryCode: String,
-    country: String
-  }
+{
+  ip: String,
+  countryCode: String,
+  country: String
+}
+```
+error response
+```
+{
+  error: String  
+}
 ```
 
 # Todo
