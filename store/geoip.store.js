@@ -1,24 +1,40 @@
 const fs = require('fs')
 
-const ipTools = require('../controllers/ip.controller')
-const { geoipDataFile } = require('../index')
+const ip = require('../controllers/ip.controller')
+const { geoipDataFile, log } = require('../index')
+const { csv_refresh_days } = require('../config.json')
 
 const store = {}
 
 module.exports = {
-  getMeta: () => { return store.meta },
+  getMeta: () => store.meta,
+  validFor: () => (csv_refresh_days * 24 * 60 * 60 * 1000) - (Date.now() - store.meta.timestamp),
   load,
   findOne
 }
 
 function load () {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     try {
       if (!fs.existsSync(geoipDataFile)) throw 'could not find file: ' + geoipDataFile
       const { data, meta } = require(geoipDataFile)
-      store.geoip = data
+      if (
+        typeof data !== 'object' ||
+        !Array.isArray(data.v4) || !Array.isArray(data.v6) ||
+        ( data.v4.length <= 0 || data.v6.length <= 0 )
+      ) throw 'failed to load store!'
+      const keys = Object.keys(data)
+      const promises = []
+      for (let k = 0; k < keys.length; k++) {
+        if (Array.isArray(data[keys[k]])) for (let i = 0; i < data[keys[k]].length; i++) promises.push(new Promise(resolve => {
+          data[keys[k]][i].from = BigInt(data[keys[k]][i].from)
+          data[keys[k]][i].to = BigInt(data[keys[k]][i].to)
+          resolve()
+        }))
+      }
+      await Promise.all(promises)
+      Object.entries(data).map(([key, entry]) => store[key] = entry)
       store.meta = meta
-      if (!Array.isArray(store.geoip) || !store.geoip.length || store.geoip.length <= 0) throw 'no valid entries in store!'
       return resolve(meta)
     } catch (err) {
       return reject(err)
@@ -26,12 +42,11 @@ function load () {
   })
 }
 
-function findOne (wantedIp) {
+function findOne ({ ip: wantedIp, version }) {
   return new Promise((resolve, reject) => {
     try {
-      if (typeof wantedIp !== 'number') throw 'invalid input'
-      console.log({ wantedIp , original: ipTools.fromLong(wantedIp) })
-      let tempList = store.geoip
+      if (typeof wantedIp !== 'bigint' || typeof version !== 'number') throw 'invalid input'
+      let tempList = store[`v${version}`]
       let iterations = 0
       while (tempList.length > 1) try {
         const half = Math.ceil(tempList.length / 2)
@@ -39,8 +54,10 @@ function findOne (wantedIp) {
         const secondHalf = tempList.slice(half)
         const lastItem = firstHalf[firstHalf.length - 1]
         const firstItem = secondHalf[0]
-        if (typeof firstItem.from !== 'number' || typeof firstItem.to !== 'number') throw 'invalid entry'
-        if (typeof lastItem.from !== 'number' || typeof lastItem.to !== 'number') throw 'invalid entry'
+        if (
+          typeof firstItem.from !== 'bigint' || typeof firstItem.to !== 'bigint' ||
+          typeof lastItem.from !== 'bigint' || typeof lastItem.to !== 'bigint'
+        ) throw 'invalid entry in database'
         if (firstItem.from <= wantedIp && firstItem.to >= wantedIp) tempList = [ firstItem ]
         else if (lastItem.from <= wantedIp && lastItem.to >= wantedIp) tempList = [ lastItem ]
         else if (lastItem.to >= wantedIp) tempList = firstHalf
@@ -53,7 +70,7 @@ function findOne (wantedIp) {
         if (iterations > 100) tempList = [ { error: 'too many iterations' } ]
       }
       if (tempList[0].from > wantedIp || tempList[0].to < wantedIp) throw { wanted: wantedIp, result: tempList[0] }
-      console.log(tempList[0], { iterations })
+      log.debug(`result in ${iterations} iterations:`, tempList[0])
       if (tempList.length !== 1) return reject('something went wrong')
       return resolve(tempList[0])
     } catch (err) {

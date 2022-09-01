@@ -1,61 +1,47 @@
 # ip-geolocation-api
-  Free local hosted "database" & api for resolving ipV4 adress to country code & country with sub 10ms response times.
-  <br />
-  To keep it simple the downloaded geoip data is store in './data/geoip.json' with a timestamp.
-  <br />
-  No actual database is used. All data gets stored in variables.
-  <br /><br />
-  At startup and every 2 hours it checks if the data is older than your wanted config. If so it will refresh the data automatically.
-  <br /><br />
+<b>Local hosted api with zero dependencies for resolving ipV4 & ipV6 (beta) adresses to country with sub 10ms response times.</b>
+<br />
+No actual database is used. All data gets stored in variables and JSON / CSV (temporary) files. Database is auto refreshing.
+<br /><br />
 
 # requirements
-  * A provider like 'https://mailfud.org/geoip-legacy/' (in testing ~95% accuracy) for csv geoip data
-  * npm
-  * nodejs
+* A provider like 'https://mailfud.org/geoip-legacy/' (in testing ~95% accuracy) for csv geoip data
+* nodejs
 
 # install
 ```
-  git clone https://github.com/needForBeans/ip-geolocation-api
-  cd ip-geolocation-api/
-  npm i
+git clone https://github.com/needForBeans/ip-geolocation-api
 ```
-# .env config
-create a file named ".env" in the ip-geolocation-api/ directory and paste the text below in it.
+you dont need to run 'npm install' as there are no dependencies
+
+# config.json
+A basic working configuration is provided.
 ```
-  # REQUIRED
-  # port on which the api will be reachable
-  #GEOIP_API_PORT=Number
-
-  # url of file to be downloaded
-  #GEOIP_CSV_SRC=String
-
-  # refresh data after set days
-  #GEOIP_SRC_VALID_FOR_DAYS=Number
-
-  # OPTIONAL
-  # if you want to use a different provider and dont need to unzip the downloaded file
-  #GEOIP_SKIP_UNZIP=true
-  
-  # EXAMPLE
-  GEOIP_API_PORT=8080
-  GEOIP_CSV_SRC='https://mailfud.org/geoip-legacy/GeoIP-legacy.csv.gz'
-  GEOIP_SRC_VALID_FOR_DAYS=3
+{
+  "port": 8080,
+  "csv_src": "https://mailfud.org/geoip-legacy/GeoIP-legacy.csv.gz",
+  "csv_refresh_days": 3
+}
 ```
 
 # start
 ```
-  node .
+node .
 ```
 
 # api
-  The api takes multiple ways of setting the wanted ip
-  * post body: { ip: '' }
-  * url query: http://127.0.0.1:8080/?ip=
-  * if nothing is set it will use the ip from the request
+The api takes multiple ways of setting the wanted ip
+* post body: { ip: '' }
+* url query: http://127.0.0.1:8080/?ip=
+* if nothing is set it will use the ip from the request
+
+<b>Headers (important)</b> <br />
+"accept": "application/json"
 
 # api reponse
 ```
-{
+status: 200
+data: {
   ip: String,
   countryCode: String,
   country: String
@@ -63,10 +49,21 @@ create a file named ".env" in the ip-geolocation-api/ directory and paste the te
 ```
 error response
 ```
-{
-  error: String  
+status: 401 | 500
+data: {
+  error: String
 }
 ```
 
+# Dependencies
+All dependencies are built in to node and should not require an install
+```
+https
+http
+url
+zlib (gunzip)
+fs
+```
+
 # Todo
-  * Add ipV6 support
+* Add ipv6 global scope check (block private addresses)

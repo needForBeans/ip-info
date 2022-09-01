@@ -1,0 +1,5 @@
+{
+  "port": 8080,
+  "csv_src": "https://mailfud.org/geoip-legacy/GeoIP-legacy.csv.gz",
+  "csv_refresh_days": 3
+}
