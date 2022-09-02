@@ -104,7 +104,7 @@ async function start () {
     if (!fs.existsSync(geoipDataFile)) await reloadDatabase()
     const meta = await geoIpStore.load()
     log.debug('loaded geoip database from file', meta)
-    const validFor = geoipStore.validFor()
+    const validFor = geoIpStore.validFor()
     if (typeof validFor !== 'number' || validFor < 30000) await reloadDatabase()  
     else {
       log.info(`database is vald for ${parseFloat(validFor / 1000 / 60 / 60 / 24).toFixed(2)} day(s)`) 
