@@ -87,6 +87,7 @@ const server = http.createServer(async (req, res) => {
   }
 })
 
+let reloadTimeout = null
 function reloadDatabase () {
   return new Promise(async (resolve, reject) => {
     try {
@@ -95,15 +96,15 @@ function reloadDatabase () {
       await geoIpStore.load()
       const validFor = geoIpStore.validFor()
       if (validFor < 12 * 60 * 1000) throw 'donwload intervall too short!' // 12h pause required to prevent network spam
-      reloadTimeout = setTimeout(reloadDatabase, validFor)
       return resolve()
     } catch (err) {
       return reject(err)
+    } finally {
+      reloadTimeout = setTimeout(reloadDatabase, validFor)    
     }
   })
 }
 
-let reloadTimeout = null
 async function start () {
   try {
     if (!fs.existsSync(geoipDataFile)) await reloadDatabase()
