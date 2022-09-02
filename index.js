@@ -92,6 +92,10 @@ function reloadDatabase () {
     try {
       await downloadController.downloadDatabase()
       await downloadController.formatDatabase()
+      await geoIpStore.load()
+      const validFor = geoIpStore.validFor()
+      if (validFor < 12 * 60 * 1000) throw 'donwload intervall too short!' // 12h pause required to prevent network spam
+      setTimeout(reloadDatabase, validFor)
       return resolve()
     } catch (err) {
       return reject(err)
