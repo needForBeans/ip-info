@@ -26,17 +26,15 @@ const log = {
 
 module.exports = {
   tempFolder,
-  tempFilename,
   dataFolder,
+  tempFilename,
   geoipDataFile,
   log
 }
 
+const ip = require('./controllers/ip.controller')
 const downloadController = require('./controllers/download.controller')
-
 const geoIpStore = require('./store/geoip.store')
-const ipController = require('./controllers/ip.controller');
-const geoipStore = require('./store/geoip.store');
 
 if (!fs.existsSync(tempFolder)) fs.mkdirSync(tempFolder)
 if (!fs.existsSync(dataFolder)) fs.mkdirSync(dataFolder)
@@ -60,17 +58,17 @@ const server = http.createServer(async (req, res) => {
     
     let wantedIp = req.method === 'POST' ? await getPostData(req) || req.socket.remoteAddress : query.ip || req.socket.remoteAddress
     
-    let version = ipController.v4regex(wantedIp, { exact: true }) ?
-      4 : ipController.v4asv6regex(wantedIp, { exact: true }) ?
-        await new Promise(resolve => { wantedIp = wantedIp.split(':')[3]; resolve(4) }) : ipController.v6regex(wantedIp, { exact: true }) ? 6 : false
+    let version = ip.v4regex(wantedIp, { exact: true }) ?
+      4 : ip.v4asv6regex(wantedIp, { exact: true }) ?
+        await new Promise(resolve => { wantedIp = wantedIp.split(':')[3]; resolve(4) }) : ip.v6regex(wantedIp, { exact: true }) ? 6 : false
     
     if (!version) throw { message: 'invalid ip' }
-    if (version === 4 && ipController.isPrivateV4(wantedIp)) throw { message: 'private ip ' + wantedIp }
+    if (version === 4 && ip.isPrivateV4(wantedIp)) throw { message: 'private ip ' + wantedIp }
     // TODO: add v6 global scope check
 
     res.on('finish', () => log.info(`[${req.socket.remoteAddress}] ${wantedIp} => ${Date.now() - startTime}ms`)) //logger
     
-    const parsed = ipController.parse({ ip: wantedIp, version })
+    const parsed = ip.parse({ ip: wantedIp, version })
     const result = await geoIpStore.findOne({ ip: parsed.number, version })
     const response = JSON.stringify({ ip: wantedIp, countryCode: result.countryCode, country: result.country })
     
