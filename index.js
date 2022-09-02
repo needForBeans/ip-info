@@ -2,6 +2,8 @@ const http = require('http')
 const url = require('url');
 const fs = require('fs')
 
+"use strict";
+
 const config = require('./config.json')
 if (
   typeof config.port !== 'number' ||
