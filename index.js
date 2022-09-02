@@ -95,7 +95,7 @@ function reloadDatabase () {
       await geoIpStore.load()
       const validFor = geoIpStore.validFor()
       if (validFor < 12 * 60 * 1000) throw 'donwload intervall too short!' // 12h pause required to prevent network spam
-      setTimeout(reloadDatabase, validFor)
+      reloadTimeout = setTimeout(reloadDatabase, validFor)
       return resolve()
     } catch (err) {
       return reject(err)
@@ -103,6 +103,7 @@ function reloadDatabase () {
   })
 }
 
+let reloadTimeout = null
 async function start () {
   try {
     if (!fs.existsSync(geoipDataFile)) await reloadDatabase()
@@ -112,7 +113,7 @@ async function start () {
     if (typeof validFor !== 'number' || validFor < 30000) await reloadDatabase()  
     else {
       log.info(`database is vald for ${parseFloat(validFor / 1000 / 60 / 60 / 24).toFixed(2)} day(s)`) 
-      setTimeout(reloadDatabase, validFor)
+      reloadTimeout = setTimeout(reloadDatabase, validFor)
     }
     server.listen(config.port, (err) => {
       if (err) throw err
