@@ -24,8 +24,6 @@ const v4asv6regex = (ip) => new RegExp(`^::ffff:${v4}$`).test(ip)
 const privateRegex = [
   new RegExp('(172)\.(1[6-9]|2[0-9]|3[0-1])(\.(2[0-4][0-9]|25[0-5]|[1][0-9][0-9]|[1-9][0-9]|[0-9])){2}'),
   new RegExp('(192)\.(168)(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){2}'),
-  //new RegExp('(10)(\.([2]([0-5][0-5]|[01234][6-9])|[1][0-9][0-9]|[1-9][0-9]|[0-9])){3}'),
-  //new RegExp('(127)(\.([2]([0-5][0-5]|[01234][6-9])|[1][0-9][0-9]|[1-9][0-9]|[0-9])){3}')
 ]
 const privateIps = [ '10', '127' ]
 
@@ -34,12 +32,6 @@ const max4 = module.exports.max4 = 2n ** 32n - 1n;
 const max6 = module.exports.max6 = 2n ** 128n - 1n;
 
 module.exports = {
-  toLong: (ip) => {
-    var ipl=0
-    ip.split('.').forEach(octet => { ipl<<=8; ipl+=parseInt(octet) })
-    return (ipl >>>0)
-  },
-  fromLong: (ipl) => `${(ipl>>>24)}.${(ipl>>16 & 255)}.${(ipl>>8 & 255)}.${(ipl & 255)}`,
   v4regex,
   v4asv6regex,
   v6regex,
