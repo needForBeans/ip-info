@@ -31,12 +31,9 @@ node .
 
 # api
 The api takes multiple ways of setting the wanted ip
-* post body: { ip: '' }
-* url query: http://127.0.0.1:8080/?ip=
-* if nothing is set it will use the ip from the request
-
-<b>Headers (important)</b> <br />
-"content-type": "application/json"
+* POST body: { ip: "" } headers: { "content-type": "application/json" }
+* url query: http://127.0.0.1:8080/?ip=""
+* if nothing is set it will use the request ip
 
 # api reponse
 ```
