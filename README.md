@@ -36,7 +36,7 @@ The api takes multiple ways of setting the wanted ip
 * if nothing is set it will use the ip from the request
 
 <b>Headers (important)</b> <br />
-"accept": "application/json"
+"content-type": "application/json"
 
 # api reponse
 ```
