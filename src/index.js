@@ -102,7 +102,8 @@ function reloadDatabase () {
     } catch (err) {
       return reject(err)
     } finally {
-      reloadTimeout = setTimeout(reloadDatabase, validFor)    
+      const oneHour = 60 * 60 * 1000
+      reloadTimeout = setTimeout(reloadDatabase, typoef validFor === 'number' && validFor > oneHour ? validFor : oneHour )    
     }
   })
 }
