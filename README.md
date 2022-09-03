@@ -29,6 +29,11 @@ A basic working configuration is provided.
 node .
 ```
 
+# docker build
+```
+docker build . -t geoip
+```
+
 # api
 The api takes multiple ways of setting the wanted ip
 * POST body: { ip: "" } headers: { "content-type": "application/json" }
