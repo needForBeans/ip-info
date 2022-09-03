@@ -33,6 +33,7 @@ node .
 ```
 docker build . -t ip-geolocation-api
 ```
+keep in mind to change the Dockerfile port if you change the default config.json port
 
 # api
 The api takes multiple ways of setting the wanted ip
