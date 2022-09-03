@@ -1,7 +1,7 @@
 # ip-geolocation-api
 <b>Local hosted api with zero dependencies for resolving ipV4 & ipV6 (beta) adresses to country with sub 10ms response times.</b>
 <br />
-No actual database is used. All data gets stored in variables and JSON / CSV (temporary) files. Database is auto refreshing.
+No actual database is used. All data gets stored in variables and JSON / CSV (temporary) files. Stored data is auto refreshing.
 <br /><br />
 
 # requirements
