@@ -5,13 +5,6 @@ const path = require('path')
 
 "use strict";
 
-const config = require('../config.json')
-if (
-  typeof config.port !== 'number' ||
-  typeof config.csv_src !== 'string' ||
-  typeof config.csv_refresh_days !== 'number' || config.csv_refresh_days <= 0
-) throw new Error('invalid config in config.json')
-
 const dataFolder = path.join(__dirname + '/../data')
 const tempFolder = path.join(dataFolder + '/temp')
 const tempFilename = path.join(tempFolder + '/geoip.csv')
@@ -36,6 +29,13 @@ module.exports = {
 const ip = require('./ip')
 const downloadController = require('./download')
 const geoIpStore = require('./store');
+const config = require('../config.json')
+
+if (
+  typeof config.port !== 'number' ||
+  typeof config.csv_src !== 'string' ||
+  typeof config.csv_refresh_days !== 'number' || config.csv_refresh_days <= 0
+) throw new Error('invalid config in config.json')
 
 if (!fs.existsSync(dataFolder)) fs.mkdirSync(dataFolder)
 if (!fs.existsSync(tempFolder)) fs.mkdirSync(tempFolder)
