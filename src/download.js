@@ -75,7 +75,13 @@ function formatDatabase () {
             if (!Array.isArray(formattedContent[`v${version}`])) formattedContent[`v${version}`] = []
             formattedContent[`v${version}`].push(info)
           } else {
-            log.error('got response with invalid format', { response: typeof info, countryCode: typeof info.countryCode, country: typeof info.country, from: typeof info.from, to: typeof info.to })
+            log.error('got response with invalid format', { 
+              response: typeof info,
+              countryCode: typeof info.countryCode,
+              country: typeof info.country,
+              from: typeof info.from,
+              to: typeof info.to
+            })
           }
         })
         .catch(err => log.error('failed to format line:', err))
