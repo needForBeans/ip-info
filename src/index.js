@@ -36,7 +36,6 @@ module.exports = {
 const ip = require('./ip')
 const downloadController = require('./download')
 const geoIpStore = require('./store');
-const { validFor } = require('./store');
 
 if (!fs.existsSync(dataFolder)) fs.mkdirSync(dataFolder)
 if (!fs.existsSync(tempFolder)) fs.mkdirSync(tempFolder)
