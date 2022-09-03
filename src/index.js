@@ -59,9 +59,8 @@ const server = http.createServer(async (req, res) => {
     
     let wantedIp = req.method === 'POST' ? await getPostData(req) || req.socket.remoteAddress : query.ip || req.socket.remoteAddress
     
-    let version = ip.v4regex(wantedIp, { exact: true }) ?
-      4 : ip.v4asv6regex(wantedIp, { exact: true }) ?
-        await new Promise(resolve => { wantedIp = wantedIp.split(':')[3]; resolve(4) }) : ip.v6regex(wantedIp, { exact: true }) ? 6 : false
+    let version = ip.v4regex(wantedIp, { exact: true }) ? 4 : ip.v4asv6regex(wantedIp, { exact: true }) ?
+      await new Promise(resolve => { wantedIp = wantedIp.split(':')[3]; resolve(4) }) : ip.v6regex(wantedIp, { exact: true }) ? 6 : false
     
     if (!version) throw { message: 'invalid ip' }
     if (version === 4 && ip.isPrivateV4(wantedIp)) throw { message: 'private ip' }
