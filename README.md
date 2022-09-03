@@ -6,7 +6,7 @@ No actual database is used. All data gets stored in variables and JSON / CSV (te
 
 # requirements
 * A provider like 'https://mailfud.org/geoip-legacy/' (in testing ~95% accuracy) for csv geoip data
-* nodejs
+* nodejs or docker
 
 # install
 ```
@@ -29,7 +29,7 @@ A basic working configuration is provided.
 node .
 ```
 
-# docker build
+# docker
 ```
 docker build . -t ip-geolocation-api
 ```
