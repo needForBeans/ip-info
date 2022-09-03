@@ -31,7 +31,7 @@ node .
 
 # docker build
 ```
-docker build . -t geoip
+docker build . -t ip-geolocation-api
 ```
 
 # api
@@ -65,6 +65,7 @@ http
 url
 zlib (gunzip)
 fs
+path
 ```
 
 # Todo
