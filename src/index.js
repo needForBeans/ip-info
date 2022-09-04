@@ -35,7 +35,8 @@ if (
   typeof config.port !== 'number' ||
   typeof config.csv_src !== 'string' ||
   typeof config.csv_refresh_days !== 'number' || config.csv_refresh_days <= 0
-) throw new Error('invalid config in config.json')
+  ) throw new Error('invalid config in config.json')
+config.reloadIntervall = (config.csv_refresh_days * 24 * 60 * 60 * 1000)
 
 if (!fs.existsSync(dataFolder)) fs.mkdirSync(dataFolder)
 if (!fs.existsSync(tempFolder)) fs.mkdirSync(tempFolder)
@@ -87,36 +88,52 @@ const server = http.createServer(async (req, res) => {
   }
 })
 
-let reloadTimeout
 function reloadDatabase () {
   return new Promise(async (resolve, reject) => {
-    let validFor
     try {
-      await downloadController.downloadDatabase()
+      if (!fs.existsSync(tempFilename)) await downloadController.downloadDatabase()
       await downloadController.formatDatabase()
       await geoIpStore.load()
-      validFor = geoIpStore.validFor()
       return resolve()
     } catch (err) {
-      return reject(err)
-    } finally {
-      const oneHour = 60 * 60 * 1000
-      reloadTimeout = setTimeout(reloadDatabase, typoef validFor === 'number' && validFor > oneHour ? validFor : oneHour )    
+      return reject(err)      
     }
   })
 }
 
+const oneHour = 60 * 60 * 1000
+let reloadIntervall = null
+let reloadTimeout = null
+
+const setReloadIntervall = () => reloadIntervall = setInterval(() => {
+  console.log('intervall set')
+  reloadDatabase
+    .then(() => log.info('successfully reloaded database'))
+    .catch(err => {
+      log.error('failed to reload database', err)
+      setTimeout(() => {
+        reloadDatabase
+          .then(() => log.info('successfully reloaded database'))
+          .catch(err => log.error('failed to reload database (2)', err))
+      }, oneHour)
+    })
+}, config.reloadIntervall)
+
 async function start () {
   try {
-    if (!fs.existsSync(geoipDataFile)) await reloadDatabase()
-    const meta = await geoIpStore.load()
-    log.debug('loaded geoip database from file', meta)
-    const validFor = geoIpStore.validFor()
-    if (typeof validFor !== 'number' || validFor < 30000) await reloadDatabase()  
-    else {
-      log.info(`database is vald for ${parseFloat(validFor / 1000 / 60 / 60 / 24).toFixed(2)} day(s)`) 
-      reloadTimeout = setTimeout(reloadDatabase, validFor)
+    if (!fs.existsSync(geoipDataFile)) {
+      await reloadDatabase()
+      setReloadIntervall()
+    } else {
+      const meta = await geoIpStore.load()
+      const validFor = geoIpStore.validFor()
+      log.debug('loaded geoip database from file', meta)
+      reloadTimeout = setTimeout(async () => {
+        await reloadDatabase()
+        setReloadIntervall()
+      }, typeof validFor !== 'number' || validFor < oneHour ? 1 : validFor)
     }
+    log.info(`database is vald for ${parseFloat(geoIpStore.validFor() / 1000 / 60 / 60 / 24).toFixed(2)} day(s)`)
     server.listen(config.port, (err) => {
       if (err) throw err
       log.info(`server started on port ${config.port}`)

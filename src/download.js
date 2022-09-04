@@ -65,22 +65,17 @@ function formatDatabase () {
       }))
       await Promise.all(promises.map(p => p
         .then(({ info, version }) => {
-          if (
-            typeof info === 'object' &&
-            Object.entries(info)
-              .map(([key, entry]) => typeof entry === 'string')
-              .filter(i => i !== true)
-              .length > 0
-          ) {
+          const invalidItems = Object.entries(info).map(([key, entry]) => {
+            if (typeof entry === 'string') return null
+            return { key, entry, type: { got: typeof entry, expected: 'string' }}
+          }).filter(i => i !== null)
+          if (typeof info === 'object' && invalidItems.length <= 0) {
             if (!Array.isArray(formattedContent[`v${version}`])) formattedContent[`v${version}`] = []
             formattedContent[`v${version}`].push(info)
           } else {
-            log.error('got response with invalid format', { 
+            log.error('got item with invalid format', { 
               response: typeof info,
-              countryCode: typeof info.countryCode,
-              country: typeof info.country,
-              from: typeof info.from,
-              to: typeof info.to
+              invalid: invalidItems
             })
           }
         })
@@ -91,8 +86,8 @@ function formatDatabase () {
       log.info(`converted csv to json in ${Date.now() - startTime}ms`, meta.items)
       if (meta.items.v4 <= 0 && meta.items.v6 <= 0) throw 'failed to extract database from csv file'
       if (fs.existsSync(geoipDataFile)) fs.unlinkSync(geoipDataFile)
-      if (fs.existsSync(tempFilename)) fs.unlinkSync(tempFilename)
-      fs.writeFileSync(geoipDataFile, JSON.stringify({ meta, data: formattedContent}))
+      //if (fs.existsSync(tempFilename)) fs.unlinkSync(tempFilename)
+      fs.writeFileSync(geoipDataFile, JSON.stringify({ meta, data: formattedContent}, null, 2))
       return resolve()
     } catch (err) {
       return reject(err)
