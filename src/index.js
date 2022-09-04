@@ -65,7 +65,7 @@ const server = http.createServer(async (req, res) => {
     
     if (typeof version !== 'number') throw { message: 'invalid ip' }
     if (version === 4 && ip.isPrivateV4(wantedIp)) throw { message: 'private ip' }
-    // TODO: add v6 global scope check
+    // TODO: add v6 private scope check
 
     res.on('finish', () => log.info(`[${req.socket.remoteAddress}] ${wantedIp} => ${Date.now() - startTime}ms`)) //logger
     
