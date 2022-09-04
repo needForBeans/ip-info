@@ -63,7 +63,7 @@ const server = http.createServer(async (req, res) => {
     let version = ip.v4regex(wantedIp, { exact: true }) ? 4 : ip.v4asv6regex(wantedIp, { exact: true }) ?
       await new Promise(resolve => { wantedIp = wantedIp.split(':')[3]; resolve(4) }) : ip.v6regex(wantedIp, { exact: true }) ? 6 : false
     
-    if (!version) throw { message: 'invalid ip' }
+    if (typeof version !== 'number') throw { message: 'invalid ip' }
     if (version === 4 && ip.isPrivateV4(wantedIp)) throw { message: 'private ip' }
     // TODO: add v6 global scope check
 
