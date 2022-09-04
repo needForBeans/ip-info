@@ -91,7 +91,7 @@ const server = http.createServer(async (req, res) => {
 function reloadDatabase () {
   return new Promise(async (resolve, reject) => {
     try {
-      if (!fs.existsSync(tempFilename)) await downloadController.downloadDatabase()
+      await downloadController.downloadDatabase()
       await downloadController.formatDatabase()
       await geoIpStore.load()
       return resolve()
