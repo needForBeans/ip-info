@@ -86,7 +86,7 @@ function formatDatabase () {
       log.info(`converted csv to json in ${Date.now() - startTime}ms`, meta.items)
       if (meta.items.v4 <= 0 && meta.items.v6 <= 0) throw 'failed to extract database from csv file'
       if (fs.existsSync(geoipDataFile)) fs.unlinkSync(geoipDataFile)
-      //if (fs.existsSync(tempFilename)) fs.unlinkSync(tempFilename)
+      if (fs.existsSync(tempFilename)) fs.unlinkSync(tempFilename)
       fs.writeFileSync(geoipDataFile, JSON.stringify({ meta, data: formattedContent}, null, 2))
       return resolve()
     } catch (err) {
