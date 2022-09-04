@@ -67,10 +67,10 @@ function formatDatabase () {
         .then(({ info, version }) => {
           if (
             typeof info === 'object' &&
-            typeof info.countryCode === 'string' &&
-            typeof info.country === 'string' &&
-            typeof info.from === 'string' &&
-            typeof info.to === 'string'
+            Object.entries(info)
+              .map(([key, entry]) => typeof entry === 'string')
+              .filter(i => i !== true)
+              .length > 0
           ) {
             if (!Array.isArray(formattedContent[`v${version}`])) formattedContent[`v${version}`] = []
             formattedContent[`v${version}`].push(info)
