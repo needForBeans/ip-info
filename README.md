@@ -45,6 +45,7 @@ The api takes multiple ways of setting the wanted ip
 ```
 status: 200
 data: {
+  ipV: Number (4 | 6)
   ip: String,
   countryCode: String,
   country: String

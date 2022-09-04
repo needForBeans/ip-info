@@ -71,7 +71,7 @@ const server = http.createServer(async (req, res) => {
     
     const parsed = ip.parse({ ip: wantedIp, version })
     const result = await geoIpStore.findOne({ ip: parsed.number, version })
-    const response = JSON.stringify({ ip: wantedIp, countryCode: result.countryCode, country: result.country })
+    const response = JSON.stringify({ ipV: version, ip: wantedIp, countryCode: result.countryCode, country: result.country })
     
     res.writeHead(200, {'content-type': 'application/json', 'accept': 'application/json'})
     res.end(response)
