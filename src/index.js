@@ -106,7 +106,6 @@ let reloadIntervall = null
 let reloadTimeout = null
 
 const setReloadIntervall = () => reloadIntervall = setInterval(() => {
-  console.log('intervall set')
   reloadDatabase
     .then(() => log.info('successfully reloaded database'))
     .catch(err => {
