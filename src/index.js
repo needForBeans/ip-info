@@ -3,7 +3,7 @@ const url = require('url');
 const fs = require('fs')
 const path = require('path')
 
-"use strict";
+"use strict"
 
 const dataFolder = path.join(__dirname + '/../data')
 const tempFolder = path.join(dataFolder + '/temp')
