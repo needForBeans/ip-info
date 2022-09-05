@@ -5,7 +5,7 @@ No actual database is used. All data gets stored in variables and JSON / CSV (te
 <br /><br />
 
 # requirements
-* A provider like 'https://mailfud.org/geoip-legacy/' (in testing ~95% accuracy) for csv geoip data
+* A free provider like 'https://mailfud.org/geoip-legacy/' (in testing ~95% accuracy) for csv geoip data
 * nodejs or docker
 
 # install
