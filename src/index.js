@@ -58,16 +58,17 @@ const server = http.createServer(async (req, res) => {
     const startTime = Date.now()
     const query = url.parse(req.url, true).query
     
-    let wantedIp = req.method === 'POST' ? await getPostData(req) || req.socket.remoteAddress : query.ip || req.socket.remoteAddress
+    let wantedIp = req.method === 'POST' ? await getPostData(req) || query.ip || req.socket.remoteAddress : query.ip || req.socket.remoteAddress
     
-    let version = ip.v4regex(wantedIp, { exact: true }) ? 4 : ip.v4asv6regex(wantedIp, { exact: true }) ?
-      await new Promise(resolve => { wantedIp = wantedIp.split(':')[3]; resolve(4) }) : ip.v6regex(wantedIp, { exact: true }) ? 6 : false
+    const version = ip.v4regex(wantedIp, { exact: true }) ? 4 :
+      ip.v4asv6regex(wantedIp, { exact: true }) ? await new Promise(resolve => { wantedIp = wantedIp.split(':')[3]; resolve(4) }) :
+        ip.v6regex(wantedIp, { exact: true }) ? 6 : false
     
     if (typeof version !== 'number') throw { message: 'invalid ip' }
     if (version === 4 && ip.isPrivateV4(wantedIp)) throw { message: 'private ip' }
     // TODO: add v6 private scope check
 
-    res.on('finish', () => log.info(`[${req.socket.remoteAddress}] ${wantedIp} => ${Date.now() - startTime}ms`)) //logger
+    res.on('finish', () => log.info(`[${req.socket.remoteAddress}] ${wantedIp} => ${Date.now() - startTime}ms`)) // success logger
     
     const parsed = ip.parse({ ip: wantedIp, version })
     const result = await geoIpStore.findOne({ ip: parsed.number, version })
