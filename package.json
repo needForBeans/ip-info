@@ -1,10 +1,9 @@
 {
   "name": "geoip-local",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "main": "src/index.js",
   "scripts": {
     "start": "node ."
   },
-  "author": "GitHub@needForBeans",
-  "dependencies": {}
+  "author": "https://github.com/needForBeans/"
 }

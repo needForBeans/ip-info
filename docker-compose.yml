@@ -1,0 +1,8 @@
+version: '3.1'
+
+services:
+  app:
+    image: ip-info
+    restart: always
+    ports:
+      - "8080:8080"

@@ -1,54 +1,72 @@
-# ip-geolocation-api
-<b>Local hosted api with zero dependencies for resolving ipV4 & ipV6 (beta) adresses to country with sub 10ms response times.</b>
-<br />
-No actual database is used. All data gets stored in variables and JSON / CSV (temporary) files. Stored data is auto refreshing.
-<br /><br />
+# ip-info
+<b>Local hosted api with zero dependencies for resolving ipV4 & ipV6 (beta) adresses.</b>
+<br>
+No actual database is used. All data gets stored in variables and JSON / CSV (temporary) files.
+<br>
 
 # requirements
-* A free provider like 'https://mailfud.org/geoip-legacy/' (in testing ~95% accuracy) for csv geoip data
 * nodejs or docker
+<br>
 
 # install
 ```
-git clone https://github.com/needForBeans/ip-geolocation-api
+git clone https://github.com/needForBeans/ip-info
 ```
 you dont need to run 'npm install' as there are no dependencies
+<br>
 
 # config.json
 A basic working configuration is provided.
-```
+<br><br>
+required
+``` 
 {
-  "port": 8080,
-  "csv_src": "https://mailfud.org/geoip-legacy/GeoIP-legacy.csv.gz",
-  "csv_refresh_days": 3
+  "port": Number
 }
 ```
+optional
+```
+{
+  "slowLoad": Boolean,
+  "debug": Boolean,
+  "debugMem": Number, // log intervall in ms
+  "NODE_ENV": String // see docs
+}
+```
+<a href="https://nodejs.dev/en/learn/nodejs-the-difference-between-development-and-production/">NODE_ENV docs</a>
+<h3>IMPORTANT</h3>
+if NODE_ENV is set to "development" it will not download new or delete temporary data if it exists.
+<br>
+
+# maxmind
+To use maxmind you need to add your licence key in maxmind.json
 
 # start
 ```
 node .
 ```
+<br>
 
 # docker
 ```
-docker build . -t ip-geolocation-api
+docker build . -t ip-info
+docker compose up -d
 ```
 keep in mind to change the Dockerfile port if you change the default config.json port
+<br>
 
 # api
 The api takes multiple ways of setting the wanted ip
 * POST body: { ip: "" } headers: { "content-type": "application/json" }
-* url query: http://127.0.0.1:8080/?ip=""
+* url query: localhost:8080/?ip=
 * if nothing is set it will use the request ip
+<br>
 
 # api reponse
 ```
 status: 200
 data: {
-  ipV: Number (4 | 6),
-  ip: String,
-  countryCode: String,
-  country: String
+  ...
 }
 ```
 error response
@@ -58,17 +76,11 @@ data: {
   error: String
 }
 ```
+<br>
 
-# Dependencies
-All dependencies are built in to node and should not require an install
-```
-https
-http
-url
-zlib (gunzip)
-fs
-path
-```
+# Credits
+* <a href="https://github.com/antelle/node-stream-zip">Antelle/node-stream-zip</a>
+<br>
 
 # Todo
 * Add ipv6 global scope check (block private addresses)
