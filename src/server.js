@@ -1,5 +1,9 @@
 const http = require('http')
 const url = require('url');
+const util = require('util')
+const dns = require('dns')
+
+const reverseDns = util.promisify(dns.reverse)
 
 const { providers } = require('./index')
 const ip = require('./utils/ip')
@@ -42,7 +46,19 @@ module.exports = http.createServer(async (req, res) => {
     const promises = []
 
     res.on('finish', () => log.debug(`[${req.socket.remoteAddress}] ${Date.now() - startTime}ms`, JSON.stringify(result, null, 2))) // success logger
+    
+    /* reverse dns */
+    promises.push(new Promise(resolve => 
+      reverseDns(wantedIp)
+        .then(dnsInfo => {
+          result.reverseDns = dnsInfo
+          log.debug(`[reverse dns] result`, JSON.stringify(dnsInfo, null, 2)) 
+        })
+        .catch(err => log.error(`[reverse dns] ${err.code || 'internal error'}`))
+        .finally(() => resolve())
+    ))
 
+    /* providers */
     providers.map(provider => {
       if (provider.isLoaded()) promises.push(new Promise(async (resolve, reject) => {
         try {

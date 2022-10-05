@@ -7,6 +7,7 @@ No actual database is used. All data gets stored in variables and JSON / CSV (te
 * <a href="https://mailfud.org/geoip-legacy/">mailfud</a>
 * <a href="https://iptoasn.com/">ip2asn</a>
 * <a href="https://www.maxmind.com/en/geoip2-databases">maxmind</a> (licence key requied)
+* nodejs dns.reverse
 
 # requirements
 * nodejs or docker
