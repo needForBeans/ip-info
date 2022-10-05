@@ -54,7 +54,15 @@ module.exports = class {
   }
 
   validFor () {
-    return this.store.meta && typeof this.store.meta.timestamp === 'number' ? this.config.validFor - (Date.now() - this.store.meta.timestamp) : false
+    return this.store.meta && typeof this.store.meta.timestamp === 'number'
+      ? this.config.validFor - (Date.now() - this.store.meta.timestamp)
+      : null
+  }
+
+  totalItems () {
+    return typeof this.store === 'object' && typeof this.store.meta === 'object' && typeof this.store.meta.items === 'object' 
+      ? Object.values(this.store.meta.items).reduce((p, a) => p + a, 0)
+      : null
   }
 
   load () {

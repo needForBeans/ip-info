@@ -71,6 +71,7 @@ function start () {
         ? log.info(`[${provider.config.name}] sucessfully loaded. valid for ${parseFloat(provider.validFor() / 1000 / 60 / 60).toFixed(2)} hour(s)`)
         : log.warn(`[${provider.config.name}] not loaded!`)
       )
+      log.debug(`Total items: ${providers.map(p => p.totalItems()).filter(i => i !== null).reduce((p, a) => p + a, 0)}`)
     }
   })
 }
