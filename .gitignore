@@ -1,4 +1,5 @@
 data
+maxmind.json
+
 node_modules
 package-lock.json
-maxmind.config.json
