@@ -307,7 +307,7 @@ module.exports = class {
         if (typeof result.provider === 'string' && result.provider === 'Not routed') delete result.provider 
         if (typeof result.countryCode === 'string' && result.countryCode === 'None') delete result.countryCode
 
-        log.debug(`[${this.config.name}] ${JSON.stringify({ iterations, ms: Date.now() - startTime }, null, 2)}`)
+        log.debug(`[${this.config.name}] ${JSON.stringify({ iterations, ms: Date.now() - startTime, result }, null, 2)}`)
         return resolve(result)
       } catch (err) {
         return reject(typeof err === 'string' ? `[${this.config.name}] [findOne] ${err}` : err)

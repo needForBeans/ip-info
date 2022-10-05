@@ -1,7 +1,7 @@
 const maxmindConfig = require('../../maxmind.json')
 const oneDay = 24 * 60 * 60 * 1000
 
-const { mailfudFormatter, ip2asnFormatter, maxmindAsnFormatter, maxmindCityFormatter, maxmindLocationFormatter } = require('./formatters')
+const { basicCountryFormatter, basicAsnFormatter, ipdbCityFormatter, maxmindAsnFormatter, maxmindCityFormatter, maxmindLocationFormatter } = require('./formatters')
 
 module.exports = [
   {
@@ -9,16 +9,38 @@ module.exports = [
     validFor: oneDay * 3,
     src: 'https://mailfud.org/geoip-legacy/GeoIP-legacy.csv.gz',
     srcType: 'csv',
-    asyncLineFormatter: mailfudFormatter
+    asyncLineFormatter: csvItems => basicCountryFormatter(csvItems, 4)
   },
   {
     name: 'ip2asn',
-    validFor: oneDay * 3,
+    validFor: oneDay * 7,
     src: 'https://iptoasn.com/data/ip2asn-combined.tsv.gz',
     srcType: 'tsv',
     formatterConfig: { delimiter: '\t' },
-    asyncLineFormatter: ip2asnFormatter
-  }
+    asyncLineFormatter: csvItems => basicAsnFormatter(csvItems, 4, 3)
+  },
+  {
+    name: 'db-ip_country',
+    validFor: oneDay * 14,
+    src: 'https://download.db-ip.com/free/dbip-country-lite-2022-10.csv.gz',
+    srcType: 'csv',
+    asyncLineFormatter: csvItems => basicCountryFormatter(csvItems, 2) 
+  },
+  {
+    name: 'db-ip_asn',
+    validFor: oneDay * 14,
+    src: 'https://download.db-ip.com/free/dbip-asn-lite-2022-10.csv.gz',
+    srcType: 'csv',
+    asyncLineFormatter: csvItems => basicAsnFormatter(csvItems, 3)
+  },
+  // memory limit reached when using this db! (+-2000mb)
+  /* {
+    name: 'db-ip_city',
+    validFor: oneDay * 14,
+    src: 'https://download.db-ip.com/free/dbip-city-lite-2022-10.csv.gz',
+    srcType: 'csv',
+    asyncLineFormatter: ipdbCityFormatter
+  } */
 ].concat(typeof maxmindConfig.licenseKey !== 'string' || maxmindConfig.licenseKey.length < 5 ? []
 : [
     {

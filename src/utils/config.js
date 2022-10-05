@@ -42,7 +42,10 @@ if (
   )
 ) return console.log('invalid config in config.json \nvalid config: \n  port: Number required\n  debug: boolean\n  debugMem: boolean')
 
-if (typeof config.NODE_ENV === 'string') process.env.NODE_ENV = config.NODE_ENV
+if (typeof config.NODE_ENV === 'string') {
+  process.env.NODE_ENV = config.NODE_ENV
+  log.warn(`NODE_ENV: ${config.NODE_ENV}`)
+}
 
 if (config.debugMem) setInterval(() => log.debug(`memory used: ${Math.round((process.memoryUsage().heapUsed / 1024 / 1024) * 100) / 100} MB`), config.debugMem)
 

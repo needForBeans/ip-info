@@ -32,8 +32,12 @@ module.exports = (inFile, dataFolder, formatFunction, config) => {
           const csvItems = line.split(typeof config.delimiter === 'string' ? config.delimiter : ',')
           for (let i = 0; i < csvItems.length; i++) csvItems[i] = csvItems[i].replace(/['"]+/g, '')
 
-          if (['network', 'geoname_id'].includes(csvItems[0])) return // filter out maxmind csv header
-          
+          /* filter out headers */
+          if (
+            ['network', 'geoname_id'].includes(csvItems[0]) || // maxmind
+            (csvItems[0] === '0.0.0.0' && csvItems[1] === '255.255.255.255') // ipdb
+          ) return null
+
           const result = await formatFunction(csvItems)
 
           if (

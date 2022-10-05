@@ -64,7 +64,7 @@ module.exports = http.createServer(async (req, res) => {
 
     await Promise.allSettled(promises)
 
-    if (Object.keys(results).length <= 0) throw 'failed to get data from providers' 
+    if (Object.keys(results).length <= 0) throw { customMessage: 'could not find any data', customStatuscode: 500 } 
     
     Object.entries(results).map(([key, entry]) => !Array.isArray(entry) 
       ? result[key] = entry
@@ -82,7 +82,7 @@ module.exports = http.createServer(async (req, res) => {
   } catch (err) {
     if (err.customMessage) {
       log.debug(`[${req.socket.remoteAddress}] request error: ${err.customMessage}`)
-      res.writeHead(401, {'content-type': 'application/json', 'accept': 'application/json'})
+      res.writeHead(typeof err.customStatuscode === 'number' ? err.customStatuscode : 401, {'content-type': 'application/json', 'accept': 'application/json'})
       res.end(JSON.stringify({ error: err.customMessage }))
     } else {
       log.error(`internal error:`, err)

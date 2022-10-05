@@ -1,10 +1,11 @@
 const ip = require('../utils/ip')
 const countryCodes = require('../utils/countryCodes.json')
 
-const mailfudFormatter = csvItems => {
+const basicCountryFormatter = (csvItems, countryCodeRow) => {
   return new Promise((resolve, reject) => {
     try {
-      if (csvItems.length < 6) throw 'not enough csv items'
+      if (typeof countryCodeRow !== 'number') throw 'invalid function input'
+      if (csvItems.length < (countryCodeRow + 1)) throw 'not enough csv items'
       
       const version = ip.getVersion(csvItems[0])
       if (![4, 6].includes(version) || version !== ip.getVersion(csvItems[1])) throw 'invalid ip version'
@@ -12,7 +13,7 @@ const mailfudFormatter = csvItems => {
       const item = {
         from: ip.parse({ ip: csvItems[0], version }).number.toString(),
         to: ip.parse({ ip: csvItems[1], version }).number.toString(),
-        countryCode: csvItems[4]
+        countryCode: csvItems[countryCodeRow]
       }
 
       const invalidItems = Object.entries(item)
@@ -35,11 +36,18 @@ const mailfudFormatter = csvItems => {
   })
 }
 
-const ip2asnFormatter = csvItems => {
+const basicAsnFormatter = (csvItems, asnDescRow, countrycodeRow) => {
   return new Promise((resolve, reject) => {
     try {
-      if (csvItems.length < 4) throw `not enough csv items`
-      
+      if (
+        typeof asnDescRow !== 'number' ||
+        (
+          typeof countrycodeRow !== 'number' &&
+          typeof countrycodeRow !== 'undefined'
+        )
+      ) throw 'invalid function input'
+      if (csvItems.length < (asnDescRow + 1)) throw `not enough csv items`
+
       const version = ip.getVersion(csvItems[0])
       if (![4, 6].includes(version) || version !== ip.getVersion(csvItems[1])) throw 'invalid ip version'
 
@@ -51,10 +59,11 @@ const ip2asnFormatter = csvItems => {
 
       const link = {
         asn: {
-          countryCode: csvItems[3],
-          provider: csvItems[4]
+          provider: csvItems[asnDescRow]
         }
       }
+
+      if (typeof countrycodeRow === 'number') link.asn.countryCode = csvItems[countrycodeRow]
 
       const invalidItems = Object.entries(item)
         .map(([key, entry]) => {
@@ -77,6 +86,38 @@ const ip2asnFormatter = csvItems => {
       if (invalidItems.length > 0) throw { err: 'invalid types in item', invalidItems }
       
       return resolve({ item, version, link })
+    } catch (err) {
+      return reject(err)
+    }
+  })
+}
+
+const ipdbCityFormatter = csvItems => {
+  return new Promise((resolve, reject) => {
+    try {
+      if (csvItems.length < 6) throw `not enough csv items`
+
+      const version = ip.getVersion(csvItems[0])
+      if (![4, 6].includes(version) || version !== ip.getVersion(csvItems[1])) throw 'invalid ip version'
+
+      const item = {
+        from: ip.parse({ ip: csvItems[0], version }).number.toString(),
+        to: ip.parse({ ip: csvItems[1], version }).number.toString(),
+        province: csvItems[4],
+        city: csvItems[5]
+      }
+
+      const invalidItems = Object.entries(item)
+        .map(([key, entry]) => {
+          const expectedType = 'string'
+          if (typeof entry === expectedType) return null
+          return { key, entry, type: { got: typeof entry, expected: expectedType }}
+        })
+        .filter(i => i !== null)
+
+      if (invalidItems.length > 0) throw { err: 'invalid types in item', invalidItems }
+      
+      return resolve({ item, version })
     } catch (err) {
       return reject(err)
     }
@@ -219,8 +260,9 @@ const maxmindLocationFormatter = csvItems => {
 }
 
 module.exports = {
-  mailfudFormatter,
-  ip2asnFormatter,
+  basicCountryFormatter,
+  basicAsnFormatter,
+  ipdbCityFormatter,
   maxmindAsnFormatter,
   maxmindCityFormatter,
   maxmindLocationFormatter
