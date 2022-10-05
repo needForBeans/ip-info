@@ -1,5 +1,5 @@
 const http = require('http')
-const url = require('url');
+const url = require('url')
 
 const { providers } = require('./index')
 const ip = require('./utils/ip')
