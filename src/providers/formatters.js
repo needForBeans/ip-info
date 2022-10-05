@@ -175,7 +175,6 @@ const maxmindLocationFormatter = csvItems => {
 
       const link = {
         geoname_id: {
-          continentCode: csvItems[2],
           countryCode: csvItems[4],
           regionCode: csvItems[6],
           regionName: csvItems[7],

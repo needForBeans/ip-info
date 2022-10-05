@@ -41,7 +41,7 @@ module.exports = http.createServer(async (req, res) => {
     const results = {}
     const promises = []
 
-    res.on('finish', () => log.debug(`[${req.socket.remoteAddress}] ${wantedIp} => ${Date.now() - startTime}ms`, JSON.stringify(result, null, 2))) // success logger
+    res.on('finish', () => log.debug(`[${req.socket.remoteAddress}] ${Date.now() - startTime}ms`, JSON.stringify(result, null, 2))) // success logger
 
     providers.map(provider => {
       if (provider.isLoaded()) promises.push(new Promise(async (resolve, reject) => {

@@ -74,7 +74,6 @@ module.exports = (inFile, dataFolder, formatFunction, config) => {
       await events.once(rl, 'close')
 
       if (Object.keys(formatted.linked).length <= 0) delete formatted.linked  
-      if (Object.keys(writeStreams.linked).length <= 0) delete writeStreams.linked  
 
       /* get meta info */
       Object.entries(formatted).map(([key, entry]) => {

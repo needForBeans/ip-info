@@ -33,7 +33,7 @@ function start () {
     try {
       const promises = []
       for (const provider of providers) {
-        log.debug(`loading provider: ${provider.config.name}`)
+        log.info(`loading provider: ${provider.config.name}`)
         const promise = new Promise(async resolve => {
           try {
             if (!provider.databaseExists()) await reloadDatabase(provider)

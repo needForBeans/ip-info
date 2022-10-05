@@ -1,12 +1,15 @@
 # ip-info
-<b>Local hosted api with zero dependencies for resolving ipV4 & ipV6 (beta) adresses.</b>
+<b>Local hosted api with zero dependencies for resolving ipV4 & ipV6 (beta).</b>
 <br>
 No actual database is used. All data gets stored in variables and JSON / CSV (temporary) files.
-<br>
+<br><br>
+<b>Providers</b>
+* <a href="https://mailfud.org/geoip-legacy/">mailfud</a>
+* <a href="https://iptoasn.com/">ip2asn</a>
+* <a href="https://www.maxmind.com/en/geoip2-databases">maxmind</a> (licence key requied)
 
 # requirements
 * nodejs or docker
-<br>
 
 # install
 ```
@@ -21,16 +24,17 @@ A basic working configuration is provided.
 required
 ``` 
 {
-  "port": Number
+  "port": Number | 8080
 }
 ```
 optional
 ```
 {
-  "slowLoad": Boolean,
-  "debug": Boolean,
-  "debugMem": Number, // log intervall in ms
-  "NODE_ENV": String // see docs
+  "slowLoad": Boolean  |  false
+  "debug":    Boolean  |  false
+  "warnings": Boolean  |  true
+  "debugMem": Number   |  null          // log intervall in ms
+  "NODE_ENV": String   |  "production"  // see docs
 }
 ```
 <a href="https://nodejs.dev/en/learn/nodejs-the-difference-between-development-and-production/">NODE_ENV docs</a>
@@ -38,8 +42,8 @@ optional
 if NODE_ENV is set to "development" it will not download new or delete temporary data if it exists.
 <br>
 
-# maxmind
-To use maxmind you need to add your licence key in maxmind.json
+<h3>maxmind</h3>
+To use maxmind asn & city you need to add your licence key in maxmind.json
 
 # start
 ```
@@ -52,7 +56,9 @@ node .
 docker build . -t ip-info
 docker compose up -d
 ```
-keep in mind to change the Dockerfile port if you change the default config.json port
+Keep in mind to change the Dockerfile port if you change the default config.json port
+<br>
+The data folder is linked with a volume to the docker container. If you run it with node first the data will be available in the docker container.
 <br>
 
 # api

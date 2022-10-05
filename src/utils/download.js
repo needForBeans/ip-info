@@ -15,8 +15,8 @@ module.exports = (src, outputFile, disableUnzip) => {
       writeStream.on('error', err => reject(err))
       
       https.get(src, res =>
-        disableUnzip === true ? 
-          res.pipe(writeStream)
+        disableUnzip === true 
+          ? res.pipe(writeStream)
           : res.pipe(unzipStream).pipe(writeStream)
       ).on('error', err => reject(err))
     } catch (err) {

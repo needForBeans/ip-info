@@ -35,6 +35,10 @@ if (
       config.debugMem > 1000
     ) &&
     typeof config.debugMem !== 'undefined'
+  ) ||
+  (
+    typeof config.warnings !== 'boolean' &&
+    typeof config.warnings !== 'undefined'
   )
 ) return console.log('invalid config in config.json \nvalid config: \n  port: Number required\n  debug: boolean\n  debugMem: boolean')
 
