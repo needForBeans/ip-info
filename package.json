@@ -3,7 +3,8 @@
   "version": "1.2.0",
   "main": "src/index.js",
   "scripts": {
-    "start": "node ."
+    "start": "node .",
+    "doublememory": "node --max-old-space-size=4096 ."
   },
   "author": "https://github.com/needForBeans/"
 }
