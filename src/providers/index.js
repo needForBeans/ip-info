@@ -33,36 +33,41 @@ module.exports = [
     srcType: 'csv',
     asyncLineFormatter: csvItems => basicAsnFormatter(csvItems, 3)
   },
-  // memory limit reached when using this db! (+-2000mb)
-  /* {
-    name: 'db-ip_city',
-    validFor: oneDay * 14,
-    src: 'https://download.db-ip.com/free/dbip-city-lite-2022-10.csv.gz',
-    srcType: 'csv',
-    asyncLineFormatter: ipdbCityFormatter
-  } */
-].concat(typeof maxmindConfig.licenseKey !== 'string' || maxmindConfig.licenseKey.length < 5 ? []
-: [
+  // memory limit reached when using this db! (+-2000mb) use "node --max-old-space-size=4096 ." for it to be enabled
+].concat(!Array.isArray(process.execArgv) || !process.execArgv.includes('--max-old-space-size=4096') 
+  ? []
+  : [
     {
-      name: 'maxmind-asn',
-      validFor: oneDay * 3,
-      src: `https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN-CSV&license_key=${maxmindConfig.licenseKey}&suffix=zip`,
-      srcType: 'folder',
-      asyncFileFormatters: {
-        "GeoLite2-ASN-Blocks-IPv4.csv": csvItems => maxmindAsnFormatter(csvItems, 4),
-        "GeoLite2-ASN-Blocks-IPv6.csv": csvItems => maxmindAsnFormatter(csvItems, 6)
-      }
-    },
-    {
-      name: 'maxmind-city',
-      validFor: oneDay * 3,
-      src: `https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City-CSV&license_key=${maxmindConfig.licenseKey}&suffix=zip`,
-      srcType: 'folder',
-      asyncFileFormatters: {
-        "GeoLite2-City-Blocks-IPv4.csv": csvItems => maxmindCityFormatter(csvItems, 4),
-        "GeoLite2-City-Blocks-IPv6.csv": csvItems => maxmindCityFormatter(csvItems, 6),
-        "GeoLite2-City-Locations-en.csv": maxmindLocationFormatter
-      }
+      name: 'db-ip_city',
+      validFor: oneDay * 14,
+      src: 'https://download.db-ip.com/free/dbip-city-lite-2022-10.csv.gz',
+      srcType: 'csv',
+      asyncLineFormatter: ipdbCityFormatter
     }
-  ]
+  ] 
+).concat(typeof maxmindConfig.licenseKey !== 'string' || maxmindConfig.licenseKey.length < 5 
+  ? []
+  : [
+      {
+        name: 'maxmind-asn',
+        validFor: oneDay * 3,
+        src: `https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN-CSV&license_key=${maxmindConfig.licenseKey}&suffix=zip`,
+        srcType: 'folder',
+        asyncFileFormatters: {
+          "GeoLite2-ASN-Blocks-IPv4.csv": csvItems => maxmindAsnFormatter(csvItems, 4),
+          "GeoLite2-ASN-Blocks-IPv6.csv": csvItems => maxmindAsnFormatter(csvItems, 6)
+        }
+      },
+      {
+        name: 'maxmind-city',
+        validFor: oneDay * 3,
+        src: `https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City-CSV&license_key=${maxmindConfig.licenseKey}&suffix=zip`,
+        srcType: 'folder',
+        asyncFileFormatters: {
+          "GeoLite2-City-Blocks-IPv4.csv": csvItems => maxmindCityFormatter(csvItems, 4),
+          "GeoLite2-City-Blocks-IPv6.csv": csvItems => maxmindCityFormatter(csvItems, 6),
+          "GeoLite2-City-Locations-en.csv": maxmindLocationFormatter
+        }
+      }
+    ]
 )
