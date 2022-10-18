@@ -1,7 +1,7 @@
 # ip-info
 <b>Local hosted api with zero dependencies for resolving ipV4 & ipV6 (beta).</b>
 <br>
-No actual database is used. All data gets stored in variables and JSON / CSV (temporary) files.
+All data gets stored in variables and JSON / CSV (temporary) files.
 <br><br>
 <b>Providers</b>
 * <a href="https://mailfud.org/geoip-legacy/">mailfud</a>
