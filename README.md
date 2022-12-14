@@ -6,11 +6,11 @@ All data gets stored in variables and JSON / CSV (temporary) files.
 
 ## Providers
 
-* <a href="https://mailfud.org/geoip-legacy/">mailfud</a>
-* <a href="https://iptoasn.com/">ip2asn</a>
-* <a href="https://db-ip.com/db/">db-ip</a>
-* <a href="https://www.maxmind.com/en/geoip2-databases">maxmind</a> (licence key requied)
-* nodejs dns.reverse
+* [mailfud](https://mailfud.org/geoip-legacy/)
+* [ip2asn](https://iptoasn.com/)
+* [db-ip](https://db-ip.com/db/)
+* [maxmind](https://www.maxmind.com/en/geoip2-databases) (licence key requied)
+* nodejs [dns.reverse](https://nodejs.org/api/dns.html#dnsreverseip-callback)
 
 ## requirements
 * nodejs or docker
